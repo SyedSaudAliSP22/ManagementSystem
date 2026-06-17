@@ -6,7 +6,7 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
-
+//Migrate Database: npx prisma migrate dev --name addNameHere
 model user_roles {
   role_id   Int     @id @default(autoincrement())
   role_name String? @db.VarChar(50)
@@ -20,4 +20,31 @@ model users {
   email      String?     @db.VarChar(255)
   password   String?     @db.VarChar(255)
   user_roles user_roles? @relation(fields: [role_id], references: [role_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_roleid")
+  dob        DateTime
+  symptoms   symptoms[]
 }
+
+// <-----------------Patient's Side----------------------------------------->
+model symptoms {
+  symptom_id          Int      @id @default(autoincrement())
+  patient_id          Int
+  patient             users    @relation(fields: [patient_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_userid")
+  symptom_description String
+  severity_level      Int
+  submitted_at        DateTime @default(now())
+  //maybe add allergies column here
+}
+
+//model for medical records
+model medrecords {
+  med_record_id Int @id @default(autoincrement())
+  //Incomplete
+}
+
+model presciptions {
+  pres_id Int @id @default(autoincrement())
+  //Incomplete
+}
+
+//create models for doctor side
+// <-----------------Doctor's Side----------------------------------------->
